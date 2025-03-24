@@ -41,4 +41,14 @@ app.use("/api", datosEmpRouter);
 app.use("/api", favoritosRoutes);
 app.use("/api", sincro);
 
+// Evita timeouts en rutas inexistentes
+app.get("/favicon.ico", (_req, res) => res.status(204).end());
+app.get("/", (_req, res) => res.status(200).json({ message: "API running" }));
+
+// Catch‑all para cualquier otra ruta (404)
+app.all("*", (_req, res) =>
+  res.status(404).json({ error: "Not Found", path: _req.originalUrl })
+);
+
+
 export default app;
