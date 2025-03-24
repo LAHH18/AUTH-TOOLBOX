@@ -1,19 +1,20 @@
-import serverless from 'serverless-http';
-import app from '../src/app.js';
-import mongoose from 'mongoose';
+import serverless from "serverless-http";
+import app from "../src/app.js";
+import mongoose from "mongoose";
 
 let isConnected = false;
 
-const handler = async (req, res) => {
+async function connectDB() {
   if (!isConnected) {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI);
     isConnected = true;
-    console.log('✅ MongoDB conectado (reuse)');
+    console.log("✅ MongoDB conectado (reuse)");
   }
-  return app(req, res);
-};
+}
 
-export default serverless(handler);
+const server = serverless(app);
+
+export default async function handler(req, res) {
+  await connectDB();
+  return server(req, res);
+}
