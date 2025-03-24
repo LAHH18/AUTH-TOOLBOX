@@ -5,7 +5,6 @@ import app from "../src/app.js";
 import mongoose from "mongoose";
 
 let isConnected = false;
-
 async function connectDB() {
   if (!isConnected) {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -14,9 +13,9 @@ async function connectDB() {
   }
 }
 
-const handler = serverless(app);
+const server = serverless(app);
 
-export default async function handlerFunction(req, res) {
+export default async function handler(req, res) {
   await connectDB();
-  await handler(req, res);    // ← Aquí usamos await, no return
+  return server(req, res);    // ← RETURN, no AWAIT
 }
