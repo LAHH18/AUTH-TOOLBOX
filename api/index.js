@@ -11,7 +11,7 @@ const handler = async (req, res) => {
       useUnifiedTopology: true,
     });
     isConnected = true;
-    console.log('🔗 MongoDB conectado — reutilizado');
+    console.log('✅ MongoDB conectado (reuse)');
   }
   return app(req, res);
 };
