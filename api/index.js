@@ -5,14 +5,17 @@ import mongoose from "mongoose";
 let isConnected = false;
 async function connectDB() {
   if (!isConnected) {
+    console.log("Intentando conectar a la DB...");
     await mongoose.connect(process.env.MONGODB_URI);
     isConnected = true;
+    console.log("DB conectada");
   }
 }
+
 
 const server = serverless(app);
 
 export default async function handler(req, res) {
-  // await connectDB();
+  await connectDB();
   return server(req, res);
 }
