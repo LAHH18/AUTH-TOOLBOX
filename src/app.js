@@ -13,19 +13,12 @@ import sincro from "./routes/sincro.routes.js";
 const app = express();
 
 // Health‑check rápido (no conecta a BD)
-app.get('/api/health', (_req, res) => {
-  return res.status(200).json({ status: 'OK' });
-});
-
-const allowedOrigins = ['http://localhost:5173', 'http://192.168.0.103:5173'];
+app.get('/api/health', (_req, res) =>
+  res.status(200).json({ status: 'OK' })
+);
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    return allowedOrigins.includes(origin)
-      ? callback(null, true)
-      : callback(new Error('Origin not allowed by CORS'));
-  },
+  origin: true,
   credentials: true
 }));
 
@@ -33,7 +26,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-// Tus rutas bajo /api
 app.use("/api", authRouters);
 app.use("/api", productsRouter);
 app.use("/api", ventRouter);
@@ -41,14 +33,11 @@ app.use("/api", datosEmpRouter);
 app.use("/api", favoritosRoutes);
 app.use("/api", sincro);
 
-// Evita timeouts en rutas inexistentes
 app.get("/favicon.ico", (_req, res) => res.status(204).end());
 app.get("/", (_req, res) => res.status(200).json({ message: "API running" }));
 
-// Catch‑all para cualquier otra ruta (404)
 app.all("*", (_req, res) =>
   res.status(404).json({ error: "Not Found", path: _req.originalUrl })
 );
-
 
 export default app;

@@ -24,5 +24,4 @@ router.put('/updatePassword', updatePassword);
 router.post('/checkEmail', checkEmail); 
 router.post('/checkAnswer', checkAnswer)
 
-
 export default router; 
