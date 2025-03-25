@@ -1,10 +1,11 @@
+// api/index.js
 import serverless from "serverless-http";
 import app from "../src/app.js";
 import mongoose from "mongoose";
 
 let isConnected = false;
 async function connectDB() {
-  if (!isConnected) {
+  if (!isConnected && process.env.MONGODB_URI) {
     console.log("Intentando conectar a la DB...");
     await mongoose.connect(process.env.MONGODB_URI);
     isConnected = true;
@@ -12,10 +13,12 @@ async function connectDB() {
   }
 }
 
-
 const server = serverless(app);
 
 export default async function handler(req, res) {
-  await connectDB();
+  // Si la ruta es /api/health, saltar la conexión a la DB
+  if (req.url !== '/api/health') {
+    await connectDB();
+  }
   return server(req, res);
 }
